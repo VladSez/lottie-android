@@ -2,9 +2,9 @@ package com.airbnb.lottie.model.animatable;
 
 import android.graphics.Color;
 import android.support.annotation.IntRange;
-import android.util.Log;
+import android.util.JsonReader;
+import android.util.JsonToken;
 
-import com.airbnb.lottie.L;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.animation.Keyframe;
 import com.airbnb.lottie.animation.keyframe.BaseKeyframeAnimation;
@@ -15,6 +15,8 @@ import com.airbnb.lottie.utils.MiscUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 
 public class AnimatableGradientColorValue extends BaseAnimatableValue<GradientColor,
@@ -42,6 +44,7 @@ public class AnimatableGradientColorValue extends BaseAnimatableValue<GradientCo
   }
 
   private static class ValueFactory implements AnimatableValue.Factory<GradientColor> {
+    /** The number of colors if it exists in the json or -1 if it doesn't (legacy bodymovin) */
     private final int colorPoints;
 
     private ValueFactory(int colorPoints) {
@@ -68,41 +71,48 @@ public class AnimatableGradientColorValue extends BaseAnimatableValue<GradientCo
      *     ...
      * ]
      */
-    @Override public GradientColor valueFromObject(Object object, float scale) {
-      JSONArray array = (JSONArray) object;
+    @Override public GradientColor valueFromObject(JsonReader reader, float scale)
+        throws IOException {
+      reader.beginArray();
+      // STOPSHIP (json)
+      while (reader.peek() != JsonToken.END_ARRAY) {
+        reader.nextDouble();
+      }
+      reader.endArray();
+
       float[] positions = new float[colorPoints];
       int[] colors = new int[colorPoints];
       GradientColor gradientColor = new GradientColor(positions, colors);
-      int r = 0;
-      int g = 0;
-      if (array.length() != colorPoints * 4) {
-        Log.w(L.TAG, "Unexpected gradient length: " + array.length() +
-            ". Expected " + (colorPoints * 4) + ". This may affect the appearance of the gradient. " +
-            "Make sure to save your After Effects file before exporting an animation with " +
-            "gradients.");
-      }
-      for (int i = 0; i < colorPoints * 4; i++) {
-        int colorIndex = i / 4;
-        double value = array.optDouble(i);
-        switch (i % 4) {
-          case 0:
-            // position
-            positions[colorIndex] = (float) value;
-            break;
-          case 1:
-            r = (int) (value * 255);
-            break;
-          case 2:
-            g = (int) (value * 255);
-            break;
-          case 3:
-            int b = (int) (value * 255);
-            colors[colorIndex] = Color.argb(255, r, g, b);
-            break;
-        }
-      }
-
-      addOpacityStopsToGradientIfNeeded(gradientColor, array);
+      // int r = 0;
+      // int g = 0;
+      // if (array.length() != colorPoints * 4) {
+      //   Log.w(L.TAG, "Unexpected gradient length: " + array.length() +
+      //       ". Expected " + (colorPoints * 4) + ". This may affect the appearance of the gradient. " +
+      //       "Make sure to save your After Effects file before exporting an animation with " +
+      //       "gradients.");
+      // }
+      // for (int i = 0; i < colorPoints * 4; i++) {
+      //   int colorIndex = i / 4;
+      //   double value = array.optDouble(i);
+      //   switch (i % 4) {
+      //     case 0:
+      //       // position
+      //       positions[colorIndex] = (float) value;
+      //       break;
+      //     case 1:
+      //       r = (int) (value * 255);
+      //       break;
+      //     case 2:
+      //       g = (int) (value * 255);
+      //       break;
+      //     case 3:
+      //       int b = (int) (value * 255);
+      //       colors[colorIndex] = Color.argb(255, r, g, b);
+      //       break;
+      //   }
+      // }
+      //
+      // addOpacityStopsToGradientIfNeeded(gradientColor, array);
       return gradientColor;
     }
 

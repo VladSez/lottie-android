@@ -1,6 +1,7 @@
 package com.airbnb.lottie.model.animatable;
 
 import android.graphics.PointF;
+import android.util.JsonReader;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.animation.Keyframe;
@@ -13,12 +14,13 @@ import com.airbnb.lottie.utils.JsonUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AnimatablePathValue implements AnimatableValue<PointF, PointF> {
   public static AnimatableValue<PointF, PointF> createAnimatablePathOrSplitDimensionPath(
-      JSONObject json, LottieComposition composition) {
+      JSONObject json, LottieComposition composition) throws IOException {
     if (json.has("k")) {
       return new AnimatablePathValue(json.opt("k"), composition);
     } else {
@@ -37,7 +39,7 @@ public class AnimatablePathValue implements AnimatableValue<PointF, PointF> {
     keyframes.add(new Keyframe<>(new PointF(0, 0)));
   }
 
-  AnimatablePathValue(Object json, LottieComposition composition) {
+  AnimatablePathValue(Object json, LottieComposition composition) throws IOException {
     if (hasKeyframes(json)) {
       JSONArray jsonArray = (JSONArray) json;
       int length = jsonArray.length();
@@ -77,8 +79,8 @@ public class AnimatablePathValue implements AnimatableValue<PointF, PointF> {
     private ValueFactory() {
     }
 
-    @Override public PointF valueFromObject(Object object, float scale) {
-      return JsonUtils.pointFromJsonArray((JSONArray) object, scale);
+    @Override public PointF valueFromObject(JsonReader reader, float scale) throws IOException {
+      return JsonUtils.pointFromJsonArray(reader, scale);
     }
   }
 }

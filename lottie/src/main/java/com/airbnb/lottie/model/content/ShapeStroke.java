@@ -15,6 +15,7 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +87,8 @@ public class ShapeStroke implements ContentModel {
     private Factory() {
     }
 
-    static ShapeStroke newInstance(JSONObject json, LottieComposition composition) {
+    static ShapeStroke newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       final String name = json.optString("nm");
       List<AnimatableFloatValue> lineDashPattern = new ArrayList<>();
       AnimatableColorValue color = AnimatableColorValue.Factory.newInstance(json.optJSONObject("c"),

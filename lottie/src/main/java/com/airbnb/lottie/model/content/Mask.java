@@ -6,6 +6,8 @@ import com.airbnb.lottie.model.animatable.AnimatableShapeValue;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class Mask {
   public enum MaskMode {
     MaskModeAdd,
@@ -28,7 +30,7 @@ public class Mask {
     private Factory() {
     }
 
-    public static Mask newMask(JSONObject json, LottieComposition composition) {
+    public static Mask newMask(JSONObject json, LottieComposition composition) throws IOException {
       MaskMode maskMode;
       switch (json.optString("mode")) {
         case "a":

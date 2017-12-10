@@ -13,6 +13,8 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class ShapeFill implements ContentModel {
   private final boolean fillEnabled;
   private final Path.FillType fillType;
@@ -33,7 +35,8 @@ public class ShapeFill implements ContentModel {
     private Factory() {
     }
 
-    static ShapeFill newInstance(JSONObject json, LottieComposition composition) {
+    static ShapeFill newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       AnimatableColorValue color = null;
       boolean fillEnabled;
       AnimatableIntegerValue opacity = null;

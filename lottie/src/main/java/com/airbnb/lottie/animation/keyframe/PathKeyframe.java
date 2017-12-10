@@ -14,6 +14,8 @@ import com.airbnb.lottie.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class PathKeyframe extends Keyframe<PointF> {
   @Nullable private Path path;
 
@@ -28,7 +30,7 @@ public class PathKeyframe extends Keyframe<PointF> {
     }
 
     public static PathKeyframe newInstance(JSONObject json, LottieComposition composition,
-        AnimatableValue.Factory<PointF> valueFactory) {
+        AnimatableValue.Factory<PointF> valueFactory) throws IOException {
       Keyframe<PointF> keyframe = Keyframe.Factory.newInstance(json, composition,
           composition.getDpScale(), valueFactory);
       PointF cp1 = null;

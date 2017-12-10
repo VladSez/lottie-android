@@ -13,6 +13,8 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class CircleShape implements ContentModel {
   private final String name;
   private final AnimatableValue<PointF, PointF> position;
@@ -35,7 +37,8 @@ public class CircleShape implements ContentModel {
     private Factory() {
     }
 
-    static CircleShape newInstance(JSONObject json, LottieComposition composition) {
+    static CircleShape newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       return new CircleShape(
           json.optString("nm"),
           AnimatablePathValue

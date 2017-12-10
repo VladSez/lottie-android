@@ -1,5 +1,7 @@
 package com.airbnb.lottie.model.animatable;
 
+import android.util.JsonReader;
+
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.animation.Keyframe;
 import com.airbnb.lottie.animation.keyframe.BaseKeyframeAnimation;
@@ -8,6 +10,7 @@ import com.airbnb.lottie.utils.JsonUtils;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 
 public class AnimatableFloatValue extends BaseAnimatableValue<Float, Float> {
@@ -34,8 +37,8 @@ public class AnimatableFloatValue extends BaseAnimatableValue<Float, Float> {
     private ValueFactory() {
     }
 
-    @Override public Float valueFromObject(Object object, float scale) {
-      return JsonUtils.valueFromObject(object) * scale;
+    @Override public Float valueFromObject(JsonReader reader, float scale) throws IOException {
+      return JsonUtils.valueFromObject(reader) * scale;
     }
   }
 
@@ -47,7 +50,8 @@ public class AnimatableFloatValue extends BaseAnimatableValue<Float, Float> {
       return new AnimatableFloatValue();
     }
 
-    public static AnimatableFloatValue newInstance(JSONObject json, LottieComposition composition) {
+    public static AnimatableFloatValue newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       return newInstance(json, composition, true);
     }
 

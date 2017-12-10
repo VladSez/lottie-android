@@ -6,6 +6,7 @@ import com.airbnb.lottie.model.content.ShapeGroup;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +56,8 @@ public class FontCharacter {
 
   public static class Factory {
 
-    public static FontCharacter newInstance(JSONObject json, LottieComposition composition) {
+    public static FontCharacter newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       char character = json.optString("ch").charAt(0);
       int size = json.optInt("size");
       double width = json.optDouble("w");

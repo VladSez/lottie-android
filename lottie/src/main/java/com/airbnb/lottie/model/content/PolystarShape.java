@@ -13,6 +13,8 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class PolystarShape implements ContentModel {
   public enum Type {
     Star(1),
@@ -104,7 +106,8 @@ public class PolystarShape implements ContentModel {
     private Factory() {
     }
 
-    static PolystarShape newInstance(JSONObject json, LottieComposition composition) {
+    static PolystarShape newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       final String name = json.optString("nm");
       Type type = Type.forValue(json.optInt("sy"));
       AnimatableFloatValue points =

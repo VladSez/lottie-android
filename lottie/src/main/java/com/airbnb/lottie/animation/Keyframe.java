@@ -5,6 +5,8 @@ import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.animation.PathInterpolatorCompat;
+import android.util.JsonReader;
+import android.util.JsonToken;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
@@ -15,8 +17,10 @@ import com.airbnb.lottie.utils.MiscUtils;
 import com.airbnb.lottie.utils.Utils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -159,8 +163,8 @@ public class Keyframe<T> {
     private Factory() {
     }
 
-    public static <T> Keyframe<T> newInstance(JSONObject json, LottieComposition composition, float scale,
-        AnimatableValue.Factory<T> valueFactory) {
+    public static <T> Keyframe<T> newInstance(JsonReader reader, LottieComposition composition,
+        float scale, AnimatableValue.Factory<T> valueFactory) throws IOException {
       PointF cp1 = null;
       PointF cp2 = null;
       float startFrame = 0;
@@ -168,16 +172,22 @@ public class Keyframe<T> {
       T endValue = null;
       Interpolator interpolator = null;
 
+      boolean animated;
+      // TODO: figure out the correct version to use for compatibility
+      if (Utils.isAtLeastVersion(composition, 4, 7, 0)) {
+        String name = reader.nextName()
+      }
+
       if (json.has("t")) {
         startFrame = (float) json.optDouble("t", 0);
         Object startValueJson = json.opt("s");
         if (startValueJson != null) {
-          startValue = valueFactory.valueFromObject(startValueJson, scale);
+          startValue = valueFactory.valueFromObject(JsonUtils.jsonToReader(startValueJson), scale);
         }
 
         Object endValueJson = json.opt("e");
         if (endValueJson != null) {
-          endValue = valueFactory.valueFromObject(endValueJson, scale);
+          endValue = valueFactory.valueFromObject(JsonUtils.jsonToReader(endValueJson), scale);
         }
 
         JSONObject cp1Json = json.optJSONObject("o");
@@ -220,23 +230,19 @@ public class Keyframe<T> {
           interpolator = LINEAR_INTERPOLATOR;
         }
       } else {
-        startValue = valueFactory.valueFromObject(json, scale);
+        startValue = valueFactory.valueFromObject(reader, scale);
         endValue = startValue;
       }
       return new Keyframe<>(composition, startValue, endValue, interpolator, startFrame, null);
     }
 
-    public static <T> List<Keyframe<T>> parseKeyframes(JSONArray json,
-        LottieComposition composition,
-        float scale, AnimatableValue.Factory<T> valueFactory) {
-      int length = json.length();
-      if (length == 0) {
-        return Collections.emptyList();
-      }
+    public static <T> List<Keyframe<T>> parseKeyframes(JsonReader reader,
+        LottieComposition composition, float scale, AnimatableValue.Factory<T> valueFactory)
+        throws IOException, JSONException {
+      reader.beginArray();
       List<Keyframe<T>> keyframes = new ArrayList<>();
-      for (int i = 0; i < length; i++) {
-        keyframes.add(Keyframe.Factory.newInstance(json.optJSONObject(i), composition, scale,
-            valueFactory));
+      while (reader.peek() != JsonToken.END_ARRAY) {
+        keyframes.add(Keyframe.Factory.newInstance(reader, composition, scale, valueFactory));
       }
 
       setEndFrames(keyframes);

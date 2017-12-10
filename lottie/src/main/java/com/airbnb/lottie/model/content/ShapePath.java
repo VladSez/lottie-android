@@ -9,6 +9,8 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class ShapePath implements ContentModel {
   private final String name;
   private final int index;
@@ -42,7 +44,8 @@ public class ShapePath implements ContentModel {
     private Factory() {
     }
 
-    static ShapePath newInstance(JSONObject json, LottieComposition composition) {
+    static ShapePath newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       AnimatableShapeValue animatableShapeValue =
           AnimatableShapeValue.Factory.newInstance(json.optJSONObject("ks"), composition);
       return new ShapePath(json.optString("nm"), json.optInt("ind"), animatableShapeValue);

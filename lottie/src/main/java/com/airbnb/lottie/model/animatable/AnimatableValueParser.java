@@ -4,10 +4,12 @@ import android.support.annotation.Nullable;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.animation.Keyframe;
+import com.airbnb.lottie.utils.JsonUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 

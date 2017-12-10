@@ -263,6 +263,15 @@ public class LottieComposition {
     }
 
     public static LottieComposition fromJsonSync(Resources res, JSONObject json) {
+      try {
+        return fromJsonSyncInternal(res, json);
+      } catch (IOException e) {
+        throw new IllegalArgumentException("Unable to parse json", e);
+      }
+    }
+
+    public static LottieComposition fromJsonSyncInternal(Resources res, JSONObject json)
+        throws IOException{
       Rect bounds = null;
       float scale = res.getDisplayMetrics().density;
       int width = json.optInt("w", -1);
@@ -293,7 +302,8 @@ public class LottieComposition {
       return composition;
     }
 
-    private static void parseLayers(JSONObject json, LottieComposition composition) {
+    private static void parseLayers(JSONObject json, LottieComposition composition)
+        throws IOException {
       JSONArray jsonLayers = json.optJSONArray("layers");
       // This should never be null. Bodymovin always exports at least an empty array.
       // However, it seems as if the unmarshalling from the React Native library sometimes
@@ -320,7 +330,7 @@ public class LottieComposition {
     }
 
     private static void parsePrecomps(
-        @Nullable JSONArray assetsJson, LottieComposition composition) {
+        @Nullable JSONArray assetsJson, LottieComposition composition) throws IOException {
       if (assetsJson == null) {
         return;
       }
@@ -374,7 +384,8 @@ public class LottieComposition {
       }
     }
 
-    private static void parseChars(@Nullable JSONArray charsJson, LottieComposition composition) {
+    private static void parseChars(@Nullable JSONArray charsJson, LottieComposition composition)
+        throws IOException {
       if (charsJson == null) {
         return;
       }

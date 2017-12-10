@@ -17,6 +17,7 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Collections;
 
 public class AnimatableTransform implements ModifierContent, ContentModel {
@@ -95,7 +96,8 @@ public class AnimatableTransform implements ModifierContent, ContentModel {
           endOpacity);
     }
 
-    public static AnimatableTransform newInstance(JSONObject json, LottieComposition composition) {
+    public static AnimatableTransform newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       AnimatablePathValue anchorPoint;
       AnimatableValue<PointF, PointF> position = null;
       AnimatableScaleValue scale;

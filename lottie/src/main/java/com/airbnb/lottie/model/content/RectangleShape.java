@@ -14,6 +14,8 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class RectangleShape implements ContentModel {
   private final String name;
   private final AnimatableValue<PointF, PointF> position;
@@ -32,7 +34,8 @@ public class RectangleShape implements ContentModel {
     private Factory() {
     }
 
-    static RectangleShape newInstance(JSONObject json, LottieComposition composition) {
+    static RectangleShape newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       return new RectangleShape(
           json.optString("nm"),
           AnimatablePathValue.createAnimatablePathOrSplitDimensionPath(

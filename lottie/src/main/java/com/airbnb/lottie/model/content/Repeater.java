@@ -12,6 +12,8 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class Repeater implements ContentModel {
   private final String name;
   private final AnimatableFloatValue copies;
@@ -51,7 +53,8 @@ public class Repeater implements ContentModel {
     private Factory() {
     }
 
-    static Repeater newInstance(JSONObject json, LottieComposition composition) {
+    static Repeater newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       String name = json.optString("nm");
       AnimatableFloatValue copies =
           AnimatableFloatValue.Factory.newInstance(json.optJSONObject("c"), composition, false);

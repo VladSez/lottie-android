@@ -16,6 +16,8 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class GradientFill implements ContentModel {
 
   private final GradientType gradientType;
@@ -88,7 +90,8 @@ public class GradientFill implements ContentModel {
     private Factory() {
     }
 
-    static GradientFill newInstance(JSONObject json, LottieComposition composition) {
+    static GradientFill newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       final String name = json.optString("nm");
 
       JSONObject jsonColor = json.optJSONObject("g");

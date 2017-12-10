@@ -8,6 +8,7 @@ import com.airbnb.lottie.model.ColorFactory;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 
 public class AnimatableColorValue extends BaseAnimatableValue<Integer, Integer> {

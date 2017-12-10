@@ -9,6 +9,8 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class ShapeTrimPath implements ContentModel {
 
   public enum Type {
@@ -74,7 +76,8 @@ public class ShapeTrimPath implements ContentModel {
     private Factory() {
     }
 
-    static ShapeTrimPath newInstance(JSONObject json, LottieComposition composition) {
+    static ShapeTrimPath newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       return new ShapeTrimPath(
           json.optString("nm"),
           Type.forId(json.optInt("m", 1)),

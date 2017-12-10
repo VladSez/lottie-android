@@ -8,6 +8,7 @@ import com.airbnb.lottie.value.ScaleXY;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 
 public class AnimatableScaleValue extends BaseAnimatableValue<ScaleXY, ScaleXY> {
@@ -32,8 +33,7 @@ public class AnimatableScaleValue extends BaseAnimatableValue<ScaleXY, ScaleXY> 
     private Factory() {
     }
 
-    static AnimatableScaleValue newInstance(
-        JSONObject json, LottieComposition composition) {
+    static AnimatableScaleValue newInstance(JSONObject json, LottieComposition composition) {
       return new AnimatableScaleValue(
           AnimatableValueParser.newInstance(json, 1, composition, ScaleXY.Factory.INSTANCE)
       );

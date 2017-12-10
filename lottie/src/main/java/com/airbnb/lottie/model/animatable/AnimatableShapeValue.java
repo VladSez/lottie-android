@@ -10,6 +10,7 @@ import com.airbnb.lottie.model.content.ShapeData;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 
 public class AnimatableShapeValue extends BaseAnimatableValue<ShapeData, Path> {

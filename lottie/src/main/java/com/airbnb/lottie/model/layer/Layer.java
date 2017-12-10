@@ -20,6 +20,7 @@ import com.airbnb.lottie.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -229,7 +230,8 @@ public class Layer {
           MatteType.None, null);
     }
 
-    public static Layer newInstance(JSONObject json, LottieComposition composition) {
+    public static Layer newInstance(JSONObject json, LottieComposition composition)
+        throws IOException{
       String layerName = json.optString("nm");
       String refId = json.optString("refId");
 

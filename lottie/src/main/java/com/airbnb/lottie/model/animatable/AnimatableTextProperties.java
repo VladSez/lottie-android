@@ -6,6 +6,8 @@ import com.airbnb.lottie.LottieComposition;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class AnimatableTextProperties {
 
   @Nullable public final AnimatableColorValue color;
@@ -28,7 +30,7 @@ public class AnimatableTextProperties {
     }
 
     public static AnimatableTextProperties newInstance(JSONObject json,
-        LottieComposition composition) {
+        LottieComposition composition) throws IOException {
       if (json == null || !json.has("a")) {
         return new AnimatableTextProperties(null, null, null, null);
       }

@@ -10,6 +10,7 @@ import com.airbnb.lottie.model.PointFFactory;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 
 public class AnimatablePointValue extends BaseAnimatableValue<PointF, PointF> {

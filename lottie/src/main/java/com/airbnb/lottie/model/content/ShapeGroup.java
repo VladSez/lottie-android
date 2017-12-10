@@ -14,13 +14,15 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ShapeGroup implements ContentModel {
   @Nullable
-  public static ContentModel shapeItemWithJson(JSONObject json, LottieComposition composition) {
+  public static ContentModel shapeItemWithJson(JSONObject json, LottieComposition composition)
+      throws IOException {
     String type = json.optString("ty");
 
     switch (type) {
@@ -68,7 +70,8 @@ public class ShapeGroup implements ContentModel {
     private Factory() {
     }
 
-    private static ShapeGroup newInstance(JSONObject json, LottieComposition composition) {
+    private static ShapeGroup newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       JSONArray jsonItems = json.optJSONArray("it");
       String name = json.optString("nm");
       List<ContentModel> items = new ArrayList<>();

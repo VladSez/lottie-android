@@ -15,6 +15,7 @@ import com.airbnb.lottie.model.layer.BaseLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +104,8 @@ public class GradientStroke implements ContentModel {
     private Factory() {
     }
 
-    static GradientStroke newInstance(JSONObject json, LottieComposition composition) {
+    static GradientStroke newInstance(JSONObject json, LottieComposition composition)
+        throws IOException {
       final String name = json.optString("nm");
       JSONObject jsonColor = json.optJSONObject("g");
       if (jsonColor != null && jsonColor.has("k")) {
