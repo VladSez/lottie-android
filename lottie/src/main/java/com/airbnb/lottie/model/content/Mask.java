@@ -1,10 +1,10 @@
 package com.airbnb.lottie.model.content;
 
+import android.util.JsonReader;
+
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.model.animatable.AnimatableIntegerValue;
 import com.airbnb.lottie.model.animatable.AnimatableShapeValue;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ public class Mask {
     MaskModeAdd,
     MaskModeSubtract,
     MaskModeIntersect,
-    MaskModeUnknown
+    MaskModeUnknown;
   }
 
   private final MaskMode maskMode;
@@ -30,27 +30,40 @@ public class Mask {
     private Factory() {
     }
 
-    public static Mask newMask(JSONObject json, LottieComposition composition) throws IOException {
-      MaskMode maskMode;
-      switch (json.optString("mode")) {
-        case "a":
-          maskMode = MaskMode.MaskModeAdd;
-          break;
-        case "s":
-          maskMode = MaskMode.MaskModeSubtract;
-          break;
-        case "i":
-          maskMode = MaskMode.MaskModeIntersect;
-          break;
-        default:
-          maskMode = MaskMode.MaskModeUnknown;
-      }
+    public static Mask newMask(
+        JsonReader reader, LottieComposition composition) throws IOException {
+      MaskMode maskMode = null;
+      AnimatableShapeValue maskPath = null;
+      AnimatableIntegerValue opacity = null;
 
-      AnimatableShapeValue maskPath = AnimatableShapeValue.Factory.newInstance(
-          json.optJSONObject("pt"), composition);
-      JSONObject opacityJson = json.optJSONObject("o");
-      AnimatableIntegerValue opacity =
-          AnimatableIntegerValue.Factory.newInstance(opacityJson, composition);
+      reader.beginObject();
+      while (reader.hasNext()) {
+        switch (reader.nextName()) {
+          case "mode":
+            switch (reader.nextString()) {
+              case "a":
+                maskMode = MaskMode.MaskModeAdd;
+                break;
+              case "s":
+                maskMode = MaskMode.MaskModeSubtract;
+                break;
+              case "i":
+                maskMode = MaskMode.MaskModeIntersect;
+                break;
+              default:
+                maskMode = MaskMode.MaskModeUnknown;
+            }
+            break;
+          case "pt":
+            maskPath = AnimatableShapeValue.Factory.newInstance(reader, composition);
+            break;
+          case "o":
+            AnimatableIntegerValue.Factory.newInstance(reader, composition);
+            break;
+        }
+      }
+      reader.endObject();
+
       return new Mask(maskMode, maskPath, opacity);
     }
   }

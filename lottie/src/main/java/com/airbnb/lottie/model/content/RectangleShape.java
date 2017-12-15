@@ -1,6 +1,7 @@
 package com.airbnb.lottie.model.content;
 
 import android.graphics.PointF;
+import android.util.JsonReader;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieDrawable;
@@ -11,8 +12,6 @@ import com.airbnb.lottie.model.animatable.AnimatablePathValue;
 import com.airbnb.lottie.model.animatable.AnimatablePointValue;
 import com.airbnb.lottie.model.animatable.AnimatableValue;
 import com.airbnb.lottie.model.layer.BaseLayer;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -34,14 +33,34 @@ public class RectangleShape implements ContentModel {
     private Factory() {
     }
 
-    static RectangleShape newInstance(JSONObject json, LottieComposition composition)
-        throws IOException {
-      return new RectangleShape(
-          json.optString("nm"),
-          AnimatablePathValue.createAnimatablePathOrSplitDimensionPath(
-              json.optJSONObject("p"), composition),
-          AnimatablePointValue.Factory.newInstance(json.optJSONObject("s"), composition),
-          AnimatableFloatValue.Factory.newInstance(json.optJSONObject("r"), composition));
+    static RectangleShape newInstance(
+        JsonReader reader, LottieComposition composition) throws IOException {
+      String name = null;
+      AnimatableValue<PointF, PointF> position = null;
+      AnimatablePointValue size = null;
+      AnimatableFloatValue roundedness = null;
+
+      // reader.beginObject();
+      while (reader.hasNext()) {
+        switch (reader.nextName()) {
+          case "nm":
+            name = reader.nextString();
+            break;
+          case "p":
+            position =
+                AnimatablePathValue.createAnimatablePathOrSplitDimensionPath(reader, composition);
+            break;
+          case "s":
+            size = AnimatablePointValue.Factory.newInstance(reader, composition);
+            break;
+          case "r":
+            roundedness = AnimatableFloatValue.Factory.newInstance(reader, composition);
+            break;
+        }
+      }
+      reader.endObject();
+
+      return new RectangleShape(name, position, size, roundedness);
     }
   }
 

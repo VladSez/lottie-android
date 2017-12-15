@@ -3,6 +3,7 @@ package com.airbnb.lottie.model.layer;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
+import android.util.JsonReader;
 import android.util.Log;
 
 import com.airbnb.lottie.L;
@@ -15,6 +16,7 @@ import com.airbnb.lottie.model.animatable.AnimatableTransform;
 import com.airbnb.lottie.model.content.ContentModel;
 import com.airbnb.lottie.model.content.Mask;
 import com.airbnb.lottie.model.content.ShapeGroup;
+import com.airbnb.lottie.utils.JsonUtils;
 import com.airbnb.lottie.utils.Utils;
 
 import org.json.JSONArray;
@@ -270,14 +272,16 @@ public class Layer {
         }
       }
 
-      AnimatableTransform transform = AnimatableTransform.Factory.newInstance(json.optJSONObject("ks"),
-          composition);
+      JsonReader transformReader = JsonUtils.jsonToReader(json.optJSONObject("ks"));
+      AnimatableTransform transform =
+          AnimatableTransform.Factory.newInstance(transformReader, composition);
       MatteType matteType = MatteType.values()[json.optInt("tt")];
       List<Mask> masks = new ArrayList<>();
       JSONArray jsonMasks = json.optJSONArray("masksProperties");
       if (jsonMasks != null) {
         for (int i = 0; i < jsonMasks.length(); i++) {
-          Mask mask = Mask.Factory.newMask(jsonMasks.optJSONObject(i), composition);
+          JsonReader maskJsonReader = JsonUtils.jsonToReader(jsonMasks.optJSONObject(i));
+          Mask mask = Mask.Factory.newMask(maskJsonReader, composition);
           masks.add(mask);
         }
       }
@@ -285,21 +289,38 @@ public class Layer {
       List<ContentModel> shapes = new ArrayList<>();
       JSONArray shapesJson = json.optJSONArray("shapes");
       if (shapesJson != null) {
-        for (int i = 0; i < shapesJson.length(); i++) {
-          ContentModel shape = ShapeGroup.shapeItemWithJson(shapesJson.optJSONObject(i), composition);
+        JsonReader shapesReader = JsonUtils.jsonToReader(shapesJson);
+        shapesReader.beginArray();
+        while (shapesReader.hasNext()) {
+          ContentModel shape = ShapeGroup.shapeItemWithJson(shapesReader, composition);
           if (shape != null) {
             shapes.add(shape);
           }
         }
+        shapesReader.endArray();
       }
 
       AnimatableTextFrame text = null;
       AnimatableTextProperties textProperties = null;
       JSONObject textJson = json.optJSONObject("t");
       if (textJson != null) {
-        text = AnimatableTextFrame.Factory.newInstance(textJson.optJSONObject("d"), composition);
-        JSONObject propertiesJson = textJson.optJSONArray("a").optJSONObject(0);
-        textProperties = AnimatableTextProperties.Factory.newInstance(propertiesJson, composition);
+        JsonReader textJsonReader = JsonUtils.jsonToReader(textJson);
+        textJsonReader.beginObject();
+        while (textJsonReader.hasNext()) {
+          switch (textJsonReader.nextName()) {
+            case "d":
+              text = AnimatableTextFrame.Factory.newInstance(textJsonReader, composition);
+              break;
+            case "a":
+              textJsonReader.beginArray();
+              textProperties = AnimatableTextProperties.Factory.newInstance(textJsonReader, composition);
+              while (textJsonReader.hasNext()) {
+                textJsonReader.skipValue();
+              }
+              textJsonReader.endArray();
+          }
+        }
+        textJsonReader.endObject();
       }
 
       if (json.has("ef")) {
@@ -348,8 +369,9 @@ public class Layer {
 
       AnimatableFloatValue timeRemapping = null;
       if (json.has("tm")) {
-        timeRemapping =
-            AnimatableFloatValue.Factory.newInstance(json.optJSONObject("tm"), composition, false);
+        // TODO (json)
+        JsonReader reader = JsonUtils.jsonToReader(json.optJSONObject("tm"));
+        timeRemapping = AnimatableFloatValue.Factory.newInstance(reader, composition, false);
       }
 
       return new Layer(shapes, composition, layerName, layerId, layerType, parentId, refId,

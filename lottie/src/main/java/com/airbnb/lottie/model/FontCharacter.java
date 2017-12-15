@@ -1,7 +1,10 @@
 package com.airbnb.lottie.model;
 
+import android.util.JsonReader;
+
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.model.content.ShapeGroup;
+import com.airbnb.lottie.utils.JsonUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -69,10 +72,11 @@ public class FontCharacter {
       if (data != null) {
         JSONArray shapesJson = data.optJSONArray("shapes");
         if (shapesJson != null) {
+          JsonReader shapesReader = JsonUtils.jsonToReader(shapesJson);
           shapes = new ArrayList<>(shapesJson.length());
-          for (int i = 0; i < shapesJson.length(); i++) {
-            shapes.add(
-                (ShapeGroup) ShapeGroup.shapeItemWithJson(shapesJson.optJSONObject(i), composition));
+          shapesReader.beginArray();
+          while (shapesReader.hasNext()) {
+            shapes.add((ShapeGroup) ShapeGroup.shapeItemWithJson(shapesReader, composition));
           }
         }
       }

@@ -2,6 +2,7 @@ package com.airbnb.lottie.model.animatable;
 
 import android.graphics.PointF;
 import android.util.JsonReader;
+import android.util.JsonToken;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.animation.Keyframe;
@@ -20,14 +21,33 @@ import java.util.List;
 
 public class AnimatablePathValue implements AnimatableValue<PointF, PointF> {
   public static AnimatableValue<PointF, PointF> createAnimatablePathOrSplitDimensionPath(
-      JSONObject json, LottieComposition composition) throws IOException {
-    if (json.has("k")) {
-      return new AnimatablePathValue(json.opt("k"), composition);
-    } else {
-      return new AnimatableSplitDimensionPathValue(
-          AnimatableFloatValue.Factory.newInstance(json.optJSONObject("x"), composition),
-          AnimatableFloatValue.Factory.newInstance(json.optJSONObject("y"), composition));
+      JsonReader reader, LottieComposition composition) throws IOException {
+
+    AnimatablePathValue pathAnimation = null;
+    AnimatableFloatValue xAnimation = null;
+    AnimatableFloatValue yAnimation = null;
+
+    reader.beginObject();
+    while (reader.peek() != JsonToken.END_OBJECT) {
+      String name = reader.nextName();
+      switch (name) {
+        case "k":
+          pathAnimation = new AnimatablePathValue(reader, composition);
+          break;
+        case "x":
+          xAnimation = AnimatableFloatValue.Factory.newInstance(reader, composition);
+          break;
+        case "y":
+          yAnimation = AnimatableFloatValue.Factory.newInstance(reader, composition);
+          break;
+      }
     }
+    reader.endObject();
+
+    if (pathAnimation != null) {
+      return pathAnimation;
+    }
+    return new AnimatableSplitDimensionPathValue(xAnimation, yAnimation);
   }
 
   private final List<Keyframe<PointF>> keyframes = new ArrayList<>();

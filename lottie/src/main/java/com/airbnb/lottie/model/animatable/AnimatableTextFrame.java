@@ -7,8 +7,6 @@ import com.airbnb.lottie.animation.Keyframe;
 import com.airbnb.lottie.animation.keyframe.TextKeyframeAnimation;
 import com.airbnb.lottie.model.DocumentData;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -26,14 +24,15 @@ public class AnimatableTextFrame extends BaseAnimatableValue<DocumentData, Docum
     private Factory() {
     }
 
-    public static AnimatableTextFrame newInstance(JSONObject json, LottieComposition composition)
-        throws IOException {
-      if (json != null && json.has("x")) {
-        composition.addWarning("Lottie doesn't support expressions.");
-      }
+    public static AnimatableTextFrame newInstance(
+        JsonReader reader, LottieComposition composition) throws IOException {
+      // TODO (json)
+      // if (json != null && json.has("x")) {
+      //   composition.addWarning("Lottie doesn't support expressions.");
+      // }
       return new AnimatableTextFrame(
           AnimatableValueParser
-              .newInstance(json, 1, composition, AnimatableTextFrame.ValueFactory.INSTANCE));
+              .newInstance(reader, 1, composition, AnimatableTextFrame.ValueFactory.INSTANCE));
     }
   }
 

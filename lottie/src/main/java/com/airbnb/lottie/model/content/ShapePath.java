@@ -1,13 +1,13 @@
 package com.airbnb.lottie.model.content;
 
+import android.util.JsonReader;
+
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieDrawable;
 import com.airbnb.lottie.animation.content.Content;
 import com.airbnb.lottie.animation.content.ShapeContent;
 import com.airbnb.lottie.model.animatable.AnimatableShapeValue;
 import com.airbnb.lottie.model.layer.BaseLayer;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -44,11 +44,29 @@ public class ShapePath implements ContentModel {
     private Factory() {
     }
 
-    static ShapePath newInstance(JSONObject json, LottieComposition composition)
-        throws IOException {
-      AnimatableShapeValue animatableShapeValue =
-          AnimatableShapeValue.Factory.newInstance(json.optJSONObject("ks"), composition);
-      return new ShapePath(json.optString("nm"), json.optInt("ind"), animatableShapeValue);
+    static ShapePath newInstance(
+        JsonReader reader, LottieComposition composition) throws IOException {
+      String name = null;
+      int ind = 0;
+      AnimatableShapeValue shape = null;
+
+      // reader.beginObject();
+      while (reader.hasNext()) {
+        switch (reader.nextName()) {
+          case "nm":
+            name = reader.nextString();
+            break;
+          case "ind":
+            ind = reader.nextInt();
+            break;
+          case "ks":
+            shape = AnimatableShapeValue.Factory.newInstance(reader, composition);
+            break;
+        }
+      }
+      reader.endObject();
+
+      return new ShapePath(name, ind, shape);
     }
   }
 }

@@ -8,8 +8,6 @@ import com.airbnb.lottie.animation.keyframe.BaseKeyframeAnimation;
 import com.airbnb.lottie.animation.keyframe.IntegerKeyframeAnimation;
 import com.airbnb.lottie.utils.JsonUtils;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -39,13 +37,14 @@ public class AnimatableIntegerValue extends BaseAnimatableValue<Integer, Integer
       return new AnimatableIntegerValue();
     }
 
-    public static AnimatableIntegerValue newInstance(JSONObject json, LottieComposition composition)
-        throws IOException {
-      if (json != null && json.has("x")) {
-        composition.addWarning("Lottie doesn't support expressions.");
-      }
+    public static AnimatableIntegerValue newInstance(
+        JsonReader reader, LottieComposition composition) throws IOException {
+      // TODO (json)
+      // if (reader != null && reader.has("x")) {
+      //   composition.addWarning("Lottie doesn't support expressions.");
+      // }
       return new AnimatableIntegerValue(
-          AnimatableValueParser.newInstance(json, 1, composition, ValueFactory.INSTANCE)
+          AnimatableValueParser.newInstance(reader, 1, composition, ValueFactory.INSTANCE)
       );
     }
   }

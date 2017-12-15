@@ -1,6 +1,7 @@
 package com.airbnb.lottie.model.content;
 
 import android.graphics.PointF;
+import android.util.JsonReader;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieDrawable;
@@ -10,8 +11,6 @@ import com.airbnb.lottie.model.animatable.AnimatableFloatValue;
 import com.airbnb.lottie.model.animatable.AnimatablePathValue;
 import com.airbnb.lottie.model.animatable.AnimatableValue;
 import com.airbnb.lottie.model.layer.BaseLayer;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -106,34 +105,54 @@ public class PolystarShape implements ContentModel {
     private Factory() {
     }
 
-    static PolystarShape newInstance(JSONObject json, LottieComposition composition)
-        throws IOException {
-      final String name = json.optString("nm");
-      Type type = Type.forValue(json.optInt("sy"));
-      AnimatableFloatValue points =
-          AnimatableFloatValue.Factory.newInstance(json.optJSONObject("pt"), composition, false);
-      AnimatableValue<PointF, PointF> position = AnimatablePathValue
-          .createAnimatablePathOrSplitDimensionPath(json.optJSONObject("p"), composition);
-      AnimatableFloatValue rotation =
-          AnimatableFloatValue.Factory.newInstance(json.optJSONObject("r"), composition, false);
-      AnimatableFloatValue outerRadius =
-          AnimatableFloatValue.Factory.newInstance(json.optJSONObject("or"), composition);
-      AnimatableFloatValue outerRoundedness =
-          AnimatableFloatValue.Factory.newInstance(json.optJSONObject("os"), composition, false);
-      AnimatableFloatValue innerRadius;
-      AnimatableFloatValue innerRoundedness;
+    static PolystarShape newInstance(
+        JsonReader reader, LottieComposition composition) throws IOException {
+      String name = null;
+      Type type = null;
+      AnimatableFloatValue points = null;
+      AnimatableValue<PointF, PointF> position = null;
+      AnimatableFloatValue rotation = null;
+      AnimatableFloatValue outerRadius = null;
+      AnimatableFloatValue outerRoundedness = null;
+      AnimatableFloatValue innerRadius = null;
+      AnimatableFloatValue innerRoundedness = null;
 
-      if (type == Type.Star) {
-        innerRadius =
-            AnimatableFloatValue.Factory.newInstance(json.optJSONObject("ir"), composition);
-        innerRoundedness =
-            AnimatableFloatValue.Factory.newInstance(json.optJSONObject("is"), composition, false);
-      } else {
-        innerRadius = null;
-        innerRoundedness = null;
+      // reader.beginObject();
+      while (reader.hasNext()) {
+        switch (reader.nextName()) {
+          case "nm":
+            name = reader.nextString();
+            break;
+          case "sy":
+            Type.forValue(reader.nextInt());
+            break;
+          case "pt":
+            points = AnimatableFloatValue.Factory.newInstance(reader, composition, false);
+            break;
+          case "p":
+            position = AnimatablePathValue .createAnimatablePathOrSplitDimensionPath(reader, composition);
+            break;
+          case "r":
+            rotation = AnimatableFloatValue.Factory.newInstance(reader, composition, false);
+            break;
+          case "or":
+            outerRadius = AnimatableFloatValue.Factory.newInstance(reader, composition);
+            break;
+          case "os":
+            outerRoundedness = AnimatableFloatValue.Factory.newInstance(reader, composition, false);
+            break;
+          case "ir":
+            innerRadius = AnimatableFloatValue.Factory.newInstance(reader, composition);
+            break;
+          case "is":
+            innerRoundedness = AnimatableFloatValue.Factory.newInstance(reader, composition, false);
+            break;
+        }
       }
-      return new PolystarShape(name, type, points, position, rotation, innerRadius, outerRadius,
-          innerRoundedness, outerRoundedness);
+      reader.endObject();
+
+      return new PolystarShape(
+          name, type, points, position, rotation, innerRadius, outerRadius, innerRoundedness, outerRoundedness);
     }
   }
 

@@ -13,10 +13,8 @@ import com.airbnb.lottie.model.content.GradientColor;
 import com.airbnb.lottie.utils.MiscUtils;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.List;
 
 public class AnimatableGradientColorValue extends BaseAnimatableValue<GradientColor,
@@ -35,10 +33,11 @@ public class AnimatableGradientColorValue extends BaseAnimatableValue<GradientCo
     }
 
     public static AnimatableGradientColorValue newInstance(
-        JSONObject json, LottieComposition composition) {
-      int points = json.optInt("p", json.optJSONArray("k").length() / 4);
+        JsonReader reader, LottieComposition composition) throws IOException {
+      // TODO (json)
+      // int points = json.optInt("p", json.optJSONArray("k").length() / 4);
       return new AnimatableGradientColorValue(
-          AnimatableValueParser.newInstance(json, 1, composition, new ValueFactory(points))
+          AnimatableValueParser.newInstance(reader, 1, composition, new ValueFactory(2 /* points */))
       );
     }
   }

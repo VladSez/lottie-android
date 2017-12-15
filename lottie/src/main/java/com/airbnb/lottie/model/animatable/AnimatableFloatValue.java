@@ -8,8 +8,6 @@ import com.airbnb.lottie.animation.keyframe.BaseKeyframeAnimation;
 import com.airbnb.lottie.animation.keyframe.FloatKeyframeAnimation;
 import com.airbnb.lottie.utils.JsonUtils;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -50,19 +48,20 @@ public class AnimatableFloatValue extends BaseAnimatableValue<Float, Float> {
       return new AnimatableFloatValue();
     }
 
-    public static AnimatableFloatValue newInstance(JSONObject json, LottieComposition composition)
+    public static AnimatableFloatValue newInstance(JsonReader reader, LottieComposition composition)
         throws IOException {
-      return newInstance(json, composition, true);
+      return newInstance(reader, composition, true);
     }
 
     public static AnimatableFloatValue newInstance(
-        JSONObject json, LottieComposition composition, boolean isDp) {
+        JsonReader reader, LottieComposition composition, boolean isDp) throws IOException {
       float scale = isDp ? composition.getDpScale() : 1f;
-      if (json != null && json.has("x")) {
-        composition.addWarning("Lottie doesn't support expressions.");
-      }
+      // TODO (json)
+      // if (json != null && json.has("x")) {
+      //   composition.addWarning("Lottie doesn't support expressions.");
+      // }
       return new AnimatableFloatValue(
-          AnimatableValueParser.newInstance(json, scale, composition, ValueFactory.INSTANCE));
+          AnimatableValueParser.newInstance(reader, scale, composition, ValueFactory.INSTANCE));
     }
   }
 }

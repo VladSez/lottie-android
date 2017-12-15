@@ -1,12 +1,12 @@
 package com.airbnb.lottie.model.animatable;
 
+import android.util.JsonReader;
+
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.animation.Keyframe;
 import com.airbnb.lottie.animation.keyframe.BaseKeyframeAnimation;
 import com.airbnb.lottie.animation.keyframe.ScaleKeyframeAnimation;
 import com.airbnb.lottie.value.ScaleXY;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,9 +33,10 @@ public class AnimatableScaleValue extends BaseAnimatableValue<ScaleXY, ScaleXY> 
     private Factory() {
     }
 
-    static AnimatableScaleValue newInstance(JSONObject json, LottieComposition composition) {
+    static AnimatableScaleValue newInstance(
+        JsonReader reader, LottieComposition composition) throws IOException {
       return new AnimatableScaleValue(
-          AnimatableValueParser.newInstance(json, 1, composition, ScaleXY.Factory.INSTANCE)
+          AnimatableValueParser.newInstance(reader, 1, composition, ScaleXY.Factory.INSTANCE)
       );
     }
 
